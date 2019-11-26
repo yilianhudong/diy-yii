@@ -67,11 +67,7 @@
     },
     "autoload": {
         "psr-4": {
-            "yii\\": "src",
-            "yii\\queue\\db\\": "src/queue/drivers/db",
-            "yii\\queue\\file\\": "src/queue/drivers/file",
-            "yii\\queue\\redis\\": "src/queue/drivers/redis",
-            "yii\\queue\\sync\\": "src/queue/drivers/sync"
+            "yii\\": "src"
         }
     },
      "extra": {
