@@ -9,16 +9,14 @@ namespace yii\debug\panels;
 
 use Yii;
 use yii\base\Event;
-use yii\debug\models\search\Mail;
 use yii\debug\Panel;
-use yii\mail\BaseMailer;
 use yii\helpers\FileHelper;
-use yii\mail\MessageInterface;
+use yii\mail\BaseMailer;
 
 /**
  * Debugger panel that collects and displays the generated emails.
  *
- * @property array $messagesFileName This property is read-only.
+ * @property array $messagesFileName Return array of created email files. This property is read-only.
  *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
@@ -44,8 +42,9 @@ class MailPanel extends Panel
         parent::init();
 
         Event::on('yii\mail\BaseMailer', BaseMailer::EVENT_AFTER_SEND, function ($event) {
-            /* @var $message MessageInterface */
+            /* @var $event \yii\mail\MailEvent */
             $message = $event->message;
+            /* @var $message \yii\mail\MessageInterface */
             $messageData = [
                 'isSuccessful' => $event->isSuccessful,
                 'from' => $this->convertParams($message->getFrom()),
@@ -56,6 +55,31 @@ class MailPanel extends Panel
                 'subject' => $message->getSubject(),
                 'charset' => $message->getCharset(),
             ];
+
+            // add more information when message is a SwiftMailer message
+            if ($message instanceof \yii\swiftmailer\Message) {
+                /* @var $swiftMessage \Swift_Message */
+                $swiftMessage = $message->getSwiftMessage();
+
+                $body = $swiftMessage->getBody();
+                if (empty($body)) {
+                    $parts = $swiftMessage->getChildren();
+                    foreach ($parts as $part) {
+                        if (!($part instanceof \Swift_Mime_Attachment)) {
+                            /* @var $part \Swift_Mime_MimePart */
+                            if ($part->getContentType() === 'text/plain') {
+                                $messageData['charset'] = $part->getCharset();
+                                $body = $part->getBody();
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                $messageData['body'] = $body;
+                $messageData['time'] = $swiftMessage->getDate();
+                $messageData['headers'] = $swiftMessage->getHeaders();
+            }
 
             // store message as file
             $fileName = $event->sender->generateMessageFileName();

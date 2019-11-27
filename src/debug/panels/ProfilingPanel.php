@@ -38,37 +38,11 @@ class ProfilingPanel extends Panel
      */
     public function save()
     {
-        $target = $this->module->logTarget;
-        $messages = $target->filterMessages($target->messages, Logger::LEVEL_PROFILE);
+        $messages = $this->getLogMessages(Logger::LEVEL_PROFILE);
         return [
             'memory' => memory_get_peak_usage(),
             'time' => microtime(true) - YII_BEGIN_TIME,
             'messages' => $messages,
         ];
-    }
-
-    /**
-     * Returns array of profiling models that can be used in a data provider.
-     * @return array models
-     */
-    protected function getModels()
-    {
-        if ($this->_models === null) {
-            $this->_models = [];
-            $timings = Yii::getLogger()->calculateTimings(isset($this->data['messages']) ? $this->data['messages'] : []);
-
-            foreach ($timings as $seq => $profileTiming) {
-                $this->_models[] = 	[
-                    'duration' => $profileTiming['duration'] * 1000, // in milliseconds
-                    'category' => $profileTiming['category'],
-                    'info' => $profileTiming['info'],
-                    'level' => $profileTiming['level'],
-                    'timestamp' => $profileTiming['timestamp'] * 1000, //in milliseconds
-                    'seq' => $seq,
-                ];
-            }
-        }
-
-        return $this->_models;
     }
 }
