@@ -10,7 +10,6 @@ namespace yii\debug;
 use Yii;
 use yii\base\Application;
 use yii\base\BootstrapInterface;
-use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\ForbiddenHttpException;
@@ -241,10 +240,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
         $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app) {
             $app->getResponse()->on(Response::EVENT_AFTER_PREPARE, [$this, 'setDebugHeaders']);
         });
-        $app->on(Application::EVENT_BEFORE_ACTION, function () use ($app) {
-            $app->getView()->on(View::EVENT_END_BODY, [$this, 'renderToolbar']);
-        });
-
         $app->getUrlManager()->addRules([
             [
                 'class' => $this->urlRuleClass,
@@ -281,7 +276,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
 
         // do not display debug toolbar when in debug view mode
-        Yii::$app->getView()->off(View::EVENT_END_BODY, [$this, 'renderToolbar']);
         Yii::$app->getResponse()->off(Response::EVENT_AFTER_PREPARE, [$this, 'setDebugHeaders']);
 
         if ($this->checkAccess($action)) {
