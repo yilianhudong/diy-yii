@@ -348,7 +348,7 @@ class FileValidator extends Validator
             $limit = $this->maxSize;
         }
         if (isset($_POST['MAX_FILE_SIZE']) && $_POST['MAX_FILE_SIZE'] > 0 && $_POST['MAX_FILE_SIZE'] < $limit) {
-            $limit = (int)$_POST['MAX_FILE_SIZE'];
+            $limit = (int) $_POST['MAX_FILE_SIZE'];
         }
 
         return $limit;
@@ -375,15 +375,15 @@ class FileValidator extends Validator
         switch (substr($sizeStr, -1)) {
             case 'M':
             case 'm':
-                return (int)$sizeStr * 1048576;
+                return (int) $sizeStr * 1048576;
             case 'K':
             case 'k':
-                return (int)$sizeStr * 1024;
+                return (int) $sizeStr * 1024;
             case 'G':
             case 'g':
-                return (int)$sizeStr * 1073741824;
+                return (int) $sizeStr * 1073741824;
             default:
-                return (int)$sizeStr;
+                return (int) $sizeStr;
         }
     }
 
@@ -462,8 +462,7 @@ class FileValidator extends Validator
      * @throws \yii\base\InvalidConfigException
      * @since 2.0.26
      */
-    protected function getMimeTypeByFile($filePath)
-    {
+    protected function getMimeTypeByFile($filePath) {
         return FileHelper::getMimeType($filePath);
     }
 }

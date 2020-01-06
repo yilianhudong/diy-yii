@@ -8,7 +8,6 @@
 namespace yii\captcha;
 
 use Yii;
-use yii\base\Controller;
 use yii\base\InvalidConfigException;
 use yii\validators\Validator;
 
@@ -64,14 +63,14 @@ class CaptchaValidator extends Validator
 
     /**
      * Creates the CAPTCHA action object from the route specified by [[captchaAction]].
-     * @return CaptchaAction the action object
+     * @return \yii\captcha\CaptchaAction the action object
      * @throws InvalidConfigException
      */
     public function createCaptchaAction()
     {
         $ca = Yii::$app->createController($this->captchaAction);
         if ($ca !== false) {
-            /* @var $controller Controller */
+            /* @var $controller \yii\base\Controller */
             list($controller, $actionID) = $ca;
             $action = $controller->createAction($actionID);
             if ($action !== null) {

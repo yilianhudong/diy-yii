@@ -262,8 +262,7 @@ abstract class Application extends Module
     }
 
     /**
-     * @throws InvalidConfigException
-     * @author Young
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -373,8 +372,6 @@ abstract class Application extends Module
      * Runs the application.
      * This is the main entrance of an application.
      * @return int the exit status (0 means normal, non-zero values mean abnormal)
-     * @throws ExitException
-     * @author Young
      */
     public function run()
     {
@@ -579,6 +576,16 @@ abstract class Application extends Module
     }
 
     /**
+     * Returns the mailer component.
+     * @return \yii\mail\MailerInterface the mailer application component.
+     */
+    public function getMailer()
+    {
+        return $this->get('mailer');
+    }
+
+
+    /**
      * Returns the security component.
      * @return \yii\base\Security the security application component.
      */
@@ -598,6 +605,7 @@ abstract class Application extends Module
             'view' => ['class' => 'yii\web\View'],
             'formatter' => ['class' => 'yii\i18n\Formatter'],
             'i18n' => ['class' => 'yii\i18n\I18N'],
+            'mailer' => ['class' => 'yii\swiftmailer\Mailer'],
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'security' => ['class' => 'yii\base\Security'],
         ];

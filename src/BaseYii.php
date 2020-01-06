@@ -68,7 +68,7 @@ class BaseYii
      */
     public static $classMap = [];
     /**
-     * @var \yii\console\Application|\yii\web\Application|\common\base\Application the application instance
+     * @var \yii\console\Application|\yii\web\Application|\common\base\Application|\common\bases\yii\Application the application instance
      */
     public static $app;
     /**
@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.28';
+        return '2.0.31';
     }
 
     /**
@@ -282,7 +282,7 @@ class BaseYii
                 $classFile = static::getAlias($classFile);
             }
         } elseif (strpos($className, '\\') !== false) {
-            $classFile =  static::getAlias('@' . str_replace('\\', '/', $className) . '.php', false);
+            $classFile = static::getAlias('@' . str_replace('\\', '/', $className) . '.php', false);
             if ($classFile === false || !is_file($classFile)) {
                 return;
             }
@@ -291,8 +291,6 @@ class BaseYii
         }
 
         include $classFile;
-
-
 
         if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) && !trait_exists($className, false)) {
             throw new UnknownClassException("Unable to find '$className' in file: $classFile. Namespace missing?");
@@ -345,17 +343,29 @@ class BaseYii
     {
         if (is_string($type)) {
             return static::$container->get($type, $params);
-        } elseif (is_array($type) && isset($type['class'])) {
+        }
+
+        if (is_callable($type, true)) {
+            return static::$container->invoke($type, $params);
+        }
+
+        if (!is_array($type)) {
+            throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
+        }
+
+        if (isset($type['__class'])) {
+            $class = $type['__class'];
+            unset($type['__class'], $type['class']);
+            return static::$container->get($class, $params, $type);
+        }
+
+        if (isset($type['class'])) {
             $class = $type['class'];
             unset($type['class']);
             return static::$container->get($class, $params, $type);
-        } elseif (is_callable($type, true)) {
-            return static::$container->invoke($type, $params);
-        } elseif (is_array($type)) {
-            throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
         }
 
-        throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
+        throw new InvalidConfigException('Object configuration must be an array containing a "class" or "__class" element.');
     }
 
     private static $_logger;

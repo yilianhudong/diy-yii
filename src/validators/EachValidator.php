@@ -124,9 +124,7 @@ class EachValidator extends Validator
     }
 
     /**
-     * @param Model $model
-     * @param string $attribute
-     * @author Young
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
