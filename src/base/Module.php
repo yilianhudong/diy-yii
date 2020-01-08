@@ -423,11 +423,19 @@ class Module extends ServiceLocator
                 return $this->_modules[$id];
             } elseif ($load) {
 
-                //判断是否用的定制文件
-                $customNamespace = 'custom\\' . $this->_modules[$id]['class'];
-                if (class_exists($customNamespace)) {
-                    $this->_modules[$id]['class'] = $customNamespace;
+                //鍒ゆ柇鏄惁鐢ㄧ殑瀹氬埗鏂囦欢
+                if (isset($this->_modules[$id]['class'])){
+                    $customNamespace = 'custom\\' . $this->_modules[$id]['class'];
+                    if (class_exists($customNamespace)) {
+                        $this->_modules[$id]['class'] = $customNamespace;
+                    }
+                }elseif (isset($this->_modules[$id]['__class'])){
+                    $customNamespace = 'custom\\' . $this->_modules[$id]['__class'];
+                    if (class_exists($customNamespace)) {
+                        $this->_modules[$id]['__class'] = $customNamespace;
+                    }
                 }
+
 
                 Yii::debug("Loading module: $id", __METHOD__);
                 /* @var $module Module */
