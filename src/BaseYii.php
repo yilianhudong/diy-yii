@@ -68,7 +68,7 @@ class BaseYii
      */
     public static $classMap = [];
     /**
-     * @var \yii\console\Application|\yii\web\Application|\common\base\Application|\common\bases\yii\Application the application instance
+     * @var \yii\console\Application|\yii\web\Application|\common\base\Application|\common\bases\yii\Application|\common\base\yii\Application the application instance
      */
     public static $app;
     /**
