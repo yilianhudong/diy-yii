@@ -279,7 +279,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
         Yii::$app->getResponse()->off(Response::EVENT_AFTER_PREPARE, [$this, 'setDebugHeaders']);
 
         if ($this->checkAccess($action)) {
-            $this->resetGlobalSettings();
             return true;
         }
 
@@ -312,15 +311,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
             ->set('X-Debug-Duration', number_format((microtime(true) - YII_BEGIN_TIME) * 1000 + 1))
             ->set('X-Debug-Link', $url);
     }
-
-    /**
-     * Resets potentially incompatible global settings done in app config.
-     */
-    protected function resetGlobalSettings()
-    {
-        Yii::$app->assetManager->bundles = [];
-    }
-
 
     /**
      * Checks if current user is allowed to access the module
